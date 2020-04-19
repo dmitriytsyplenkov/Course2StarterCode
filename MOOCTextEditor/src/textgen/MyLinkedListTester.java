@@ -115,6 +115,34 @@ public class MyLinkedListTester {
 		assertEquals("Remove: check size is correct ", 2, list1.size());
 		
 		// TODO: Add more tests here
+		try {
+			emptyList.remove(0);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+
+		}
+		try {
+			emptyList.remove(7);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+
+		}
+		try {
+			shortList.remove(-1);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+
+		}
+		try {
+			shortList.remove(2);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+
+		}
 	}
 	
 	/** Test adding an element into the end of the list, specifically
@@ -124,7 +152,14 @@ public class MyLinkedListTester {
 	public void testAddEnd()
 	{
         // TODO: implement this test
-		
+		try {
+			emptyList.add(null);
+			fail("Check out of null input");
+		}
+		catch (NullPointerException e) {
+		}
+		assertEquals("Check adding in empty list", true, emptyList.add(7));
+		assertEquals("Check adding in non-empty list", true, shortList.add("C"));
 	}
 
 	
@@ -133,6 +168,8 @@ public class MyLinkedListTester {
 	public void testSize()
 	{
 		// TODO: implement this test
+		assertEquals("Check size of empty list", 0, emptyList.size());
+		assertEquals("Check size of non-empty list", 2, shortList.size());
 	}
 
 	
@@ -145,7 +182,34 @@ public class MyLinkedListTester {
 	public void testAddAtIndex()
 	{
         // TODO: implement this test
-		
+		try {
+			longerList.add(0,null);
+			fail("Check for null input");
+		}
+		catch (NullPointerException e) {
+		}
+
+		try {
+			longerList.add(-1,8);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+		try {
+			emptyList.add(1,8);
+			fail("Check out of bounds for empty list");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+
+
+		emptyList.add(0, 7);
+		assertEquals("adding in empty list check 0 element is correct", (Integer)7, emptyList.get(0));
+
+		shortList.add(1, "C");
+		assertEquals("adding in the end of non-list check element 0 is correct", "A", shortList.get(0));
+		assertEquals("adding in the end of non-list check element 1 is correct", "C", shortList.get(1));
+		assertEquals("adding in the end of non-list check element 2 is correct", "B", shortList.get(2));
 	}
 	
 	/** Test setting an element in the list */
@@ -153,7 +217,32 @@ public class MyLinkedListTester {
 	public void testSet()
 	{
 	    // TODO: implement this test
-	    
+		try {
+			longerList.set(0, null);
+			fail("Check for null input");
+		}
+		catch (NullPointerException e) {
+		}
+
+		try {
+			longerList.set(-1, 8);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+		try {
+			emptyList.set(0, 8);
+			fail("Check out of bounds for empty list");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+
+
+
+		shortList.set(1, "C");
+		assertEquals("setting in the end of non-list check element 1 is correct", "C", shortList.get(1));
+		shortList.set(0, "D");
+		assertEquals("setting in the begining of non-list check element 1 is correct", "D", shortList.get(0));
 	}
 	
 	
