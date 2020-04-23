@@ -1,19 +1,21 @@
 package spelling;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An trie data structure that implements the Dictionary and the AutoComplete ADT
  *
  * @author You
  */
-public class AutoCompleteDictionaryTrie implements Dictionary, AutoComplete {
+public class AutoCompleteMatchCase implements Dictionary, AutoComplete {
 
     private TrieNode root;
     private int size;
 
 
-    public AutoCompleteDictionaryTrie() {
+    public AutoCompleteMatchCase() {
         root = new TrieNode();
     }
 
@@ -34,7 +36,7 @@ public class AutoCompleteDictionaryTrie implements Dictionary, AutoComplete {
      * in the dictionary.
      */
     public boolean addWord(String word) {
-        char[] wordLetters = word.toLowerCase().toCharArray();
+        char[] wordLetters = word.toCharArray();
         TrieNode curNode = root;
         for (int i = 0; i < wordLetters.length; i++) {
             TrieNode children = curNode.insert(wordLetters[i]);
@@ -80,7 +82,7 @@ public class AutoCompleteDictionaryTrie implements Dictionary, AutoComplete {
      */
     @Override
     public boolean isWord(String s) {
-        char[] wordLetters = s.toLowerCase().toCharArray();
+        char[] wordLetters = s.toCharArray();
         TrieNode curNode = root;
         for (int i = 0; i < wordLetters.length; i++) {
             curNode = curNode.getChild(wordLetters[i]);
@@ -130,15 +132,41 @@ public class AutoCompleteDictionaryTrie implements Dictionary, AutoComplete {
         // Return the list of completions
 		List<String> completions = new ArrayList<String>();
 		TrieNode curNode = root;
+        boolean allCaps = false;
+        boolean firstIsCap = false;
 		if (!prefix.equals("")) {
-			char[] wordLetters = prefix.toLowerCase().toCharArray();
+
+            if (prefix.equals(prefix.toUpperCase())) {
+                allCaps = true;
+                prefix = prefix.toUpperCase().substring(0,1)+prefix.toLowerCase().substring(1);
+            }else if (prefix.equals(prefix.toUpperCase().substring(0,1)+prefix.toLowerCase().substring(1))) {
+                firstIsCap = true;
+            }
+            char[] wordLetters = prefix.toCharArray();
 
 			for (int i = 0; i < wordLetters.length; i++) {
 				curNode = curNode.getChild(wordLetters[i]);
 				if (curNode == null) {
-					return completions;
+					break;
 				}
 			}
+
+            if (curNode == null ) {
+                if (allCaps) {
+                    prefix = prefix.toLowerCase();
+                } else if (firstIsCap) {
+                    prefix = prefix.toLowerCase();
+                } else {
+                    return completions;
+                }
+                curNode = root;
+                for (int i = 0; i < wordLetters.length; i++) {
+                    curNode = curNode.getChild(wordLetters[i]);
+                    if (curNode == null) {
+                        return  completions;
+                    }
+                }
+            }
 		}
 
 
@@ -148,7 +176,15 @@ public class AutoCompleteDictionaryTrie implements Dictionary, AutoComplete {
             curNode = queue.remove();
 
             if (curNode.endsWord()) {
-                completions.add(curNode.getText());
+                String curText = curNode.getText();
+                if (allCaps) {
+                    completions.add(curText.toUpperCase());
+                } else if (firstIsCap) {
+                    completions.add(curText.toUpperCase().substring(0,1)+curText.substring(1));
+                } else {
+                    completions.add(curText);
+                }
+
                 numCompletions--;
             }
             for (Character character : curNode.getValidNextCharacters()) {
